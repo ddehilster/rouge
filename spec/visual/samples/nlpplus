@@ -1,0 +1,96 @@
+###############################################
+# Two passes from a medication-instruction analyzer, and its helpers.
+###############################################
+
+@NODES _sig
+
+# A limit over a counted period: "not to exceed 8 tablets in 24 hours".
+@POST
+S("amount") = N("max",2);
+S("unit") = N("unit",2);
+S("period") = N("max",4);
+S("periodunit") = N("unit",5);
+S("rule") = RuleSource();
+single();
+@RULES
+_maxDose <-
+	_max				### (1) not to exceed, max, up to ...
+	_dose				### (2) 8 tablets
+	_xWILD [one match=(in within over)]	### (3)
+	_range				### (4) 24
+	_time				### (5) hours
+	@@
+
+# A limit per period: "max 6 tabs/day", "not to exceed 4 tablets per day".
+@POST
+S("amount") = N("max",2);
+S("unit") = N("unit",2);
+S("period") = "1";
+S("periodunit") = N("unit",3);
+S("rule") = RuleSource();
+single();
+@RULES
+_maxDose <-
+	_max	### (1)
+	_dose	### (2)
+	_per	### (3) per day, /day, a day
+	@@
+
+# A limit with no period: "max 3 doses", "up to 3 doses".
+@POST
+S("amount") = N("max",2);
+S("unit") = N("unit",2);
+S("rule") = RuleSource();
+single();
+@RULES
+_maxDose <-
+	_max	### (1)
+	_dose	### (2)
+	@@
+
+# The tokenizer splits 0.5 into 0, ., 5. Rejoin them only when nothing
+# separates them, so the period ending "q12h. Take" stays a period.
+@CHECK
+if (!N("NOSP",2) || !N("NOSP",3)) fail();
+@POST
+S("value") = N("$text",1) + "." + N("$text",3);
+single();
+@RULES
+_decimal <-
+	_xNUM	### (1) whole part
+	\.		### (2)
+	_xNUM	### (3) fraction part
+	@@
+
+@DECL
+
+# Read spec/analyzer.seq into G("pass names"), indexed by pass number, so
+# every field can say which pass built it. Comment lines and inactive passes
+# (a leading /) are not passes; every other line is one, the tokenizer first.
+LoadPassNames() {
+	L("lines") = readlines(G("$apppath") + "/spec/analyzer.seq");
+	if (!strlength(L("lines")[0])) return 0;
+	L("len") = arraylength(L("lines"));
+	L("i") = 0;
+	L("pass") = 0;
+	while (L("i") < L("len")) {
+		L("line") = strtrim(L("lines")[L("i")]);
+		if (strlength(L("line")) && !strstartswith(L("line"),"#") && !strstartswith(L("line"),"/")) {
+			L("pass")++;
+			L("parts") = split(L("line"),"\t");
+			G("pass names")[L("pass")] = L("parts")[1];
+		}
+		L("i")++;
+	}
+	return L("pass");
+}
+
+# Name the rule that is firing right now: "<pass> rule <n>". Called from the
+# @POST of every rule that builds a field, and stored on the node it builds.
+RuleSource() {
+	L("name") = G("pass names")[G("$passnum")];
+	if (!L("name")) L("name") = "pass " + str(G("$passnum"));
+	return L("name") + " rule " + str(G("$rulenum"));
+}
+
+@@DECL

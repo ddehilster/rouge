@@ -1,0 +1,13 @@
+# Recognize amounts of money: "$1.2 million", "3 dollars"
+@PATH _ROOT _paragraph _sentence
+
+@POST
+S("value") = num(N("value",1)) * num(N("numeric",2));
+single();
+
+@RULES
+_money <-
+	_money			### (1)
+	_number			### (2)
+	_currency [opt]	### (3)
+	@@
