@@ -37,6 +37,15 @@ describe Rouge::Lexers::NLPPlusSeq do
         ['Comment.Special', "/nlp\toldPass"]
     end
 
+    it 'recognizes the pat pass type and // comments' do
+      assert_tokens_equal "pat\tsentences\n// a comment",
+        ['Keyword', 'pat'],
+        ['Text', "\t"],
+        ['Name.Function', 'sentences'],
+        ['Text', "\n"],
+        ['Comment.Single', '// a comment']
+    end
+
     it 'lexes the demo and the visual sample without errors' do
       assert_no_errors File.read(File.join(__dir__, '../../lib/rouge/demos/nlpplus-seq'))
       assert_no_errors File.read(File.join(__dir__, '../visual/samples/nlpplus-seq'))
