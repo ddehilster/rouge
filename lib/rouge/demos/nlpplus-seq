@@ -1,0 +1,6 @@
+tokenize	nil	# Gen:   Convert input to token list.
+nlp	KBFuncs	# Declare the knowledge base display and dump functions
+nlp	initKB	# Create the corporate, parse, and companies concepts and seed the known companies
+nlp	join	# Join numbers, years, and quoted text into single nodes
+nlp	sentences	# Cut the text into sentences and make a concept for each one
+nlp	paragraphs	# Gather the sentences into paragraphs

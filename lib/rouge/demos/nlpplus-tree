@@ -1,0 +1,4 @@
+_ROOT [0,1362,0,1362,0,0,node,un, ("TOT LINES" 1) ("TOT TABS" 0) ("TOT LOWERS" 229) ("TOT CAPS" 35) ("TOT UPPERS" 8) ("TOT NUMS" 51)]
+   _sig [0,33,0,33,6,20,node,fired,blt]
+      _verb [0,3,0,3,8,23,node,fired,blt, ("NOSP" 1) ("cap" 1) ("sig" "verb") ("verb" "take") ("rule" "vocab rule 1")]
+         Take [0,3,0,3,0,0,alpha,fired, ("NOSP" 1) ("cap" 1) ("sig" "verb") ("verb" "take")]

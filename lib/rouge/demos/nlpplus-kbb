@@ -1,0 +1,4 @@
+nationalities
+  nationality
+    afghan: country=afghanistan, iso2=af, iso3=afg, noun=afghan, plural=afghans
+    alandic: country="åland islands", iso2=ax, iso3=ala, noun=alander, plural=alanders, synonym=["åland island","åland islander"]

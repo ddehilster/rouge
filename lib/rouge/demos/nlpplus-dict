@@ -1,0 +1,4 @@
+# Nationality (demonym) names in English.
+afghan nationality=1 adj=1 noun=1 country=afghanistan iso2=af iso3=afg pos=adj
+afghan pos=noun
+afghans nationality=1 noun=1 plural=1 root=afghan country=afghanistan iso2=af iso3=afg pos=noun
